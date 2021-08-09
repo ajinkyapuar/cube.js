@@ -468,7 +468,7 @@ pre-aggregations based on a time interval.
 <!-- prettier-ignore-start -->
 [[warning | ]]
 | The `every` parameter **does not** force Cube.js to fetch `refreshKey` based
-| on an interval. It instead generates a SQL query whose result should change
+| on an interval. It instead generates an SQL query whose result should change
 | at least once per defined interval and adjusts `refreshKeyRenewalThreshold`
 | accordingly. [Learn more][ref-cube-refreshkey].
 <!-- prettier-ignore-end -->
@@ -492,6 +492,24 @@ cube(`Orders`, {
 
 For possible `every` parameter values please refer to
 [`refreshKey`][ref-cube-refreshkey] documentation.
+
+You can also use `every` with `sql`:
+
+```javascript
+cube(`Orders`, {
+  sql: `select * from orders`,
+
+  preAggregations: {
+    main: {
+      measures: [CUBE.count],
+      refreshKey: {
+        every: `1 hour`,
+        sql: `SELECT MAX(created_at) FROM orders`,
+      },
+    },
+  },
+});
+```
 
 <h4 id="parameters-refresh-key-incremental">
 incremental
